@@ -11,7 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb+srv://vikas:axBk7Jwjs8iELf3l@cluster0.pael6.mongodb.net/";
+const uri =
+  "mongodb+srv://vikas:axBk7Jwjs8iELf3l@cluster0.pael6.mongodb.net/mydatabase?retryWrites=true&w=majority";
 
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
