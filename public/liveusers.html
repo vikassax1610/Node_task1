@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Users</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(120deg, #34a85a,#66d9ef, #4ec9f5 );
+            background-repeat: inherit;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #fff;
+            text-align: center;
+            text-shadow: 2px 2px #000;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            background-color: #f2f2f2;
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Users</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Socket ID</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="usersList">
+        </tbody>
+    </table>
+
+    <script>
+        const socket = io();
+    
+
+      socket.emit('joinRoom', { name: 'Live User Page'});  
+    
+   
+        socket.on('userList', (users) => {
+            $('#usersList').empty(); 
+    
+
+            users.forEach(user => {
+                if (user.email) {
+
+                    const status = user.socketId ? 'Online' : 'Offline'; 
+                    $('#usersList').append(`
+                        <tr>
+                            <td><a href="#" onclick="getUserData('${user.email}')">${user.email}</a></td>
+                            <td>${user.socketId || 'N/A'}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `);
+                }
+            });
+        });
+        function getUserData(email) {
+            $.get('/api/users?email=' + email, (data) => {
+                alert(`User Info: ${JSON.stringify(data)}`);
+            });
+        }
+    </script>
+</body>
+</html>

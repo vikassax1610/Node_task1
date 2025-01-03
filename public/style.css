@@ -120,7 +120,22 @@ li:hover {
     background-color: rgba(255, 255, 255, 0.5);
     transform: scale(1.02);
 }
+#navigation {
+    text-align: center;
+    margin-top: 20px;
+}
 
+#navigation a{
+     text-decoration: none;
+     width: 100%;
+    padding: 10px;
+    background-color: #ffaa00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+} 
 
 @media only screen and (max-width: 600px) {
     button {

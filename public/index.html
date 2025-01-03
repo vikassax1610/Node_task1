@@ -3,72 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Node task 1</title>
+    <title>User Registration</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="style.css">
-  
+    
 </head>
 <body>
-    <h1>Task 1</h1>
-    
-    <form id="dataForm">
+    <h1>User Registration</h1>
+    <form id="userForm">
         <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required><br><br>
+        <input type="text" id="firstName" required>
 
         <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required><br><br>
+        <input type="text" id="lastName" required>
 
-        <label for="mobile">Mobile No:</label>
-        <input type="text" id="mobile" name="mobile" pattern="\d{10}" title="Mobile number must be 10 digits" required><br><br>
+        <label for="mobile">Mobile:</label>
+        <input type="text" id="mobile" required>
 
-        <label for="email">Email ID:</label>
-        <input type="email" id="email" name="email" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
 
         <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required><br><br>
+        <input type="text" id="address" required>
 
         <label for="street">Street:</label>
-        <input type="text" id="street" name="street" required><br><br>
+        <input type="text" id="street" required>
 
         <label for="city">City:</label>
-        <input type="text" id="city" name="city" required><br><br>
+        <input type="text" id="city" required>
 
         <label for="state">State:</label>
-        <input type="text" id="state" name="state" required><br><br>
+        <input type="text" id="state" required>
 
         <label for="country">Country:</label>
-        <input type="text" id="country" name="country" required><br><br>
+        <input type="text" id="country" required>
 
         <label for="loginId">Login ID:</label>
-        <input type="text" id="loginId" name="loginId" pattern="[a-zA-Z0-9]{8,}" title="Login ID must be at least 8 characters, alphanumeric" required><br><br>
+        <input type="text" id="loginId" required>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" title="Password must be at least 6 characters long, contain 1 uppercase letter, 1 lowercase letter, 1 special character" required><br><br>
-
-        <input type="hidden" id="creationTime" name="creationTime">
-        <input type="hidden" id="lastUpdatedTime" name="lastUpdatedTime">
+        <input type="password" id="password" required>
 
         <button type="button" id="saveButton">Save</button>
     </form>
 
-    <h1>User Data</h1>
-    <button type="button" id="fetchButton">Fetch Data</button>
-    
-
-    <div id="result">
-        <h2>User Info</h2>
-        <ul id="dataList"> </ul>
+    <div id="navigation" style="display:none;">
+        <a href="liveusers.html" target="_blank">Go to Live Users</a>
     </div>
 
     <script>
-        $(document).ready(function() {
-            // Function to get the current date and time
+          
+          $(document).ready(function() {
+  
             function getCurrentTime() {
                 const now = new Date();
                 return now.toISOString();
             }
     
-            // Function to display error messages
+    
             function showError(fieldId, message) {
                 const errorElement = $('#' + fieldId + 'Error');
                 if (!errorElement.length) {
@@ -76,17 +69,15 @@
                 }
             }
     
-            // Function to remove error messages
             function removeError(fieldId) {
                 $('#' + fieldId + 'Error').remove();
             }
-    
-            // Validate form fields
+
             function validateForm() {
                 let isValid = true;
                 const namePattern = /^[a-zA-Z]+$/;
     
-                // First Name validation
+           
                if (!namePattern.test($('#firstName').val().trim())) {
                     showError('firstName', 'First Name must contain only alphabetic characters');
                     isValid = false;
@@ -94,7 +85,7 @@
                     removeError('firstName');
                 }
     
-                // Last Name validation
+           
                 if (!namePattern.test($('#lastName').val().trim())) {
                 showError('lastName', 'Last Name must contain only alphabetic characters');
                 isValid = false;
@@ -102,7 +93,7 @@
                     removeError('lastName');
                 }
     
-                // Mobile validation
+          
                 const mobile = $('#mobile').val();
                 const mobilePattern = /^\d{10}$/;
                 if (!mobilePattern.test(mobile)) {
@@ -112,7 +103,6 @@
                     removeError('mobile');
                 }
     
-                // Email validation
                 const email = $('#email').val();
                 const emailPattern = /^\S+@\S+\.\S+$/;
                 if (!emailPattern.test(email)) {
@@ -122,7 +112,7 @@
                     removeError('email');
                 }
     
-                // Address validation
+               
                 if ($('#address').val().trim() === "") {
                     showError('address', 'Address is required');
                     isValid = false;
@@ -130,7 +120,7 @@
                     removeError('address');
                 }
     
-                // Street validation
+              
                 if ($('#street').val().trim() === "") {
                     showError('street', 'Street is required');
                     isValid = false;
@@ -138,7 +128,6 @@
                     removeError('street');
                 }
     
-                // City validation
                 const city = $('#city').val().trim();
             if (!namePattern.test(city) || city.length < 2) {
                 showError('city', 'City must contain only alphabetic characters and be at least 2 characters long');
@@ -147,7 +136,7 @@
                 removeError('city');
             }
     
-                // State validation
+          
                 const state = $('#state').val().trim();
             if (!namePattern.test(state) || state.length < 2) {
                 showError('state', 'State must contain only alphabetic characters and be at least 2 characters long');
@@ -156,7 +145,7 @@
                 removeError('state');
             }
     
-                // Country validation
+              
                 const country = $('#country').val().trim();
             if (!namePattern.test(country)) {
                 showError('country', 'Country must contain only alphabetic characters');
@@ -165,7 +154,7 @@
                 removeError('country');
             }
     
-                // Login ID validation
+             
                 const loginId = $('#loginId').val();
                 const loginIdPattern = /^[a-zA-Z0-9]{8,}$/;
                 if (!loginIdPattern.test(loginId)) {
@@ -175,7 +164,6 @@
                     removeError('loginId');
                 }
     
-                // Password validation
                 const password = $('#password').val();
                 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
                 if (!passwordPattern.test(password)) {
@@ -188,74 +176,49 @@
                 return isValid;
             }
     
-            // Save data to MongoDB
+           
             $('#saveButton').on('click', function() {
-                // Validate form before submitting
+                
                 if (!validateForm()) {
                     return;
                 }
     
-                // Set creation and update times
                 const creationTime = getCurrentTime();
                 const lastUpdatedTime = creationTime;
-    
-                // Form data
-                const formData = {
-                    firstName: $('#firstName').val(),
-                    lastName: $('#lastName').val(),
-                    mobile: $('#mobile').val(),
-                    email: $('#email').val(),
-                    address: $('#address').val(),
-                    street: $('#street').val(),
-                    city: $('#city').val(),
-                    state: $('#state').val(),
-                    country: $('#country').val(),
-                    loginId: $('#loginId').val(),
-                    password: $('#password').val(),
-                    creationTime: creationTime,
-                    lastUpdatedTime: lastUpdatedTime
-                };
-                
-                $.ajax({
-                    url: 'https://node-9ogz.onrender.com/saveData',  // Adjust this URL based on your server
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        alert('Data saved successfully!');
-                    },
-                    error: function(error) {
-                        console.error('Error saving data:', error);
-                    }
-                });
-            });
-    
-            // Fetch data from MongoDB
-            $('#fetchButton').on('click', function() {
-                $.ajax({
-                    url: 'https://node-9ogz.onrender.com/getData',  // Adjust this URL based on your server
-                    type: 'GET',
-                    success: function(data) {
-                        $('#dataList').empty();
-                        data.forEach(item => {
-                            $('#dataList').append('<li>' +
-                                'Name: ' + item.firstName + ' ' + item.lastName + 
-                                ' | Mobile: ' + item.mobile + 
-                                ' | Email: ' + item.email + 
-                                ' | Address: ' + item.address + ', ' + item.street + ', ' + item.city + ', ' + item.state + ', ' + item.country +
-                                ' | Login ID: ' + item.loginId +
-                                ' | Creation Time: ' + item.creationTime +
-                                ' | Last Updated On: ' + item.lastUpdatedTime +
-                                '</li>');
-                        });
-                    },
-                    error: function(error) {
-                        console.error('Error fetching data:', error);
-                    }
-                });
+
+            const userData = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                mobile: $('#mobile').val(),
+                email: $('#email').val(),
+                address: $('#address').val(),
+                street: $('#street').val(),
+                city: $('#city').val(),
+                state: $('#state').val(),
+                country: $('#country').val(),
+                loginId: $('#loginId').val(),
+                password: $('#password').val()
+            };
+
+            $.ajax({
+                url: '/api/user',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(userData),
+                success: function (response) {
+                    alert('User saved successfully');
+                    const socket = io();
+                    socket.emit('joinRoom', { email: response.email, name: response.firstName });
+
+                  
+                    $('#navigation').show();
+                },
+                error: function (error) {
+                    alert('Error: ' + error.responseText);
+                }
             });
         });
+    });
     </script>
-    
 </body>
 </html>
